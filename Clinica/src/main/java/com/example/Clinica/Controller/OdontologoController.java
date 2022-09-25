@@ -1,5 +1,6 @@
 package com.example.Clinica.Controller;
 
+import com.example.Clinica.Exception.ResourceNotFoundException;
 import com.example.Clinica.Model.DTO.OdontologoDto;
 import com.example.Clinica.Service.OdontologoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,24 +24,20 @@ public class OdontologoController {
     }
 
     @GetMapping("/{id}")
-    public OdontologoDto buscarOdotologoPorId(@PathVariable Long id){
+    public OdontologoDto buscarOdotologoPorId(@PathVariable Long id) throws ResourceNotFoundException {
         return odontologoService.bucarOdontologoPorId(id);
     }
 
     @PutMapping
-    public ResponseEntity<?> modificarOdontologo(@RequestBody OdontologoDto odontologoDto){
+    public ResponseEntity<?> modificarOdontologo(@RequestBody OdontologoDto odontologoDto) throws ResourceNotFoundException {
         odontologoService.modificarOdontologo(odontologoDto);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarOdontologo(@PathVariable Long id){
-        ResponseEntity response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        if(odontologoService.bucarOdontologoPorId(id) != null){
-            odontologoService.eliminarOdontologoPorId(id);
-            response = (new ResponseEntity<>(HttpStatus.OK));
-        }
-        return response;
+    public ResponseEntity<?> eliminarOdontologo(@PathVariable Long id) throws ResourceNotFoundException {
+        odontologoService.eliminarOdontologoPorId(id);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping

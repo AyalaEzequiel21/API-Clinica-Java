@@ -1,6 +1,12 @@
 package com.example.Clinica.Controller;
 
+import com.example.Clinica.Exception.BadRequestException;
+import com.example.Clinica.Exception.ResourceNotFoundException;
+import com.example.Clinica.Model.DTO.OdontologoDto;
+import com.example.Clinica.Model.DTO.PacienteDto;
 import com.example.Clinica.Model.DTO.TurnoDto;
+import com.example.Clinica.Service.OdontologoService;
+import com.example.Clinica.Service.PacienteService;
 import com.example.Clinica.Service.TurnoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,30 +23,26 @@ public class TurnoController {
     TurnoService turnoService;
 
     @PostMapping
-    public ResponseEntity<?> crearTurno(@RequestBody TurnoDto turnoDto){
+    public ResponseEntity<?> crearTurno(@RequestBody TurnoDto turnoDto) throws ResourceNotFoundException, BadRequestException {
         turnoService.crearTurno(turnoDto);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public TurnoDto buscarTurnoPorId(@PathVariable Long id){
+    public TurnoDto buscarTurnoPorId(@PathVariable Long id) throws ResourceNotFoundException {
         return turnoService.bucarTurnoPorId(id);
     }
 
     @PutMapping
-    public ResponseEntity<?> modificarTurno(@RequestBody TurnoDto turnoDto){
-        turnoService.crearTurno(turnoDto);
+    public ResponseEntity<?> modificarTurno(@RequestBody TurnoDto turnoDto) throws ResourceNotFoundException, BadRequestException {
+        turnoService.modificarTurno(turnoDto);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarTurno(Long id){
-        ResponseEntity response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        if (turnoService.bucarTurnoPorId(id) != null){
-            turnoService.eliminarTurnoPorId(id);
-            response = new ResponseEntity<>(HttpStatus.OK);
-        }
-        return response;
+    public ResponseEntity<?> eliminarTurno(@PathVariable Long id) throws ResourceNotFoundException {
+        turnoService.eliminarTurnoPorId(id);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping

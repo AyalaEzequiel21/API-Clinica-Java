@@ -1,5 +1,6 @@
 package com.example.Clinica.Service;
 
+import com.example.Clinica.Exception.ResourceNotFoundException;
 import com.example.Clinica.Model.DTO.DomicilioDto;
 import com.example.Clinica.Model.DTO.OdontologoDto;
 import com.example.Clinica.Model.DTO.PacienteDto;
@@ -23,8 +24,8 @@ public class PacienteService implements IPacienteService{
     @Autowired
     IPacienteRepository pacienteRepository;
 
-    @Autowired
-    IDomicilioRepository domicilioRepository;
+//    @Autowired
+//    IDomicilioRepository domicilioRepository;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -35,24 +36,30 @@ public class PacienteService implements IPacienteService{
     }
 
     @Override
-    public PacienteDto bucarPacientePorId(long id) {
+    public PacienteDto bucarPacientePorId(long id) throws ResourceNotFoundException {
 
         PacienteDto pacienteDto = null;
         Optional<Paciente> paciente = pacienteRepository.findById(id);
-        if(paciente.isPresent()){
-            pacienteDto = objectMapper.convertValue(paciente, PacienteDto.class);
+        if(!paciente.isPresent()){
+            throw new ResourceNotFoundException("El paciente no existe.");
         }
+        pacienteDto = objectMapper.convertValue(paciente, PacienteDto.class);
         return pacienteDto;
     }
 
     @Override
-    public void modificarOdontologo(PacienteDto pacienteDto) {
+    public void modificarOdontologo(PacienteDto pacienteDto) throws ResourceNotFoundException {
+        if (!pacienteRepository.findById(pacienteDto.getId()).isPresent()){
+            throw new ResourceNotFoundException("El paciente no existe");
+        }
         guardarPaciente(pacienteDto);
     }
 
     @Override
-    public void eliminarPacientePorId(long id) {
-
+    public void eliminarPacientePorId(long id) throws ResourceNotFoundException {
+        if (!pacienteRepository.findById(id).isPresent()){
+            throw new ResourceNotFoundException("Los datos ingresados no son validos.");
+        }
         pacienteRepository.deleteById(id);
     }
 

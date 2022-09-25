@@ -2,6 +2,7 @@ package com.example.Clinica.Model.Entity;
 
 import com.example.Clinica.Model.Entity.Domicilio;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -23,8 +24,9 @@ public class Paciente {
 //    @JsonIgnore
     private Domicilio domicilio;
 
-    @OneToMany(mappedBy = "paciente")
-    @JsonIgnore
+    @OneToMany(mappedBy = "paciente", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//    @JsonIgnore
     private Set<Turno> turnos;
 
     public Paciente() {
@@ -94,11 +96,11 @@ public class Paciente {
                 '}';
     }
 
-    public Set<Turno> getTurnos() {
-        return turnos;
-    }
-
-    public void setTurnos(Set<Turno> turnos) {
-        this.turnos = turnos;
-    }
+//    public Set<Turno> getTurnos() {
+//        return turnos;
+//    }
+//
+//    public void setTurnos(Set<Turno> turnos) {
+//        this.turnos = turnos;
+//    }
 }

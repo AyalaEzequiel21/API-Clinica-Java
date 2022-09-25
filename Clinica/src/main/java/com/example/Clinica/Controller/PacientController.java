@@ -1,5 +1,6 @@
 package com.example.Clinica.Controller;
 
+import com.example.Clinica.Exception.ResourceNotFoundException;
 import com.example.Clinica.Model.DTO.PacienteDto;
 import com.example.Clinica.Model.Entity.Paciente;
 import com.example.Clinica.Repository.IPacienteRepository;
@@ -25,24 +26,20 @@ public class PacientController {
     }
 
     @GetMapping("/{id}")
-    public PacienteDto buscarPacientePorID(@PathVariable long id){
+    public PacienteDto buscarPacientePorID(@PathVariable long id) throws ResourceNotFoundException {
         return pacienteService.bucarPacientePorId(id);
     }
 
     @PutMapping
-    public ResponseEntity<?> modificarPaciente(@RequestBody PacienteDto pacienteDto){
+    public ResponseEntity<?> modificarPaciente(@RequestBody PacienteDto pacienteDto) throws ResourceNotFoundException {
         pacienteService.modificarOdontologo(pacienteDto);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarPacientePorId(@PathVariable long id){
-        ResponseEntity response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        if(pacienteService.bucarPacientePorId(id) != null){
-            pacienteService.eliminarPacientePorId(id);
-            response = (new ResponseEntity<>(HttpStatus.OK));
-        }
-        return response;
+    public ResponseEntity<?> eliminarPacientePorId(@PathVariable long id) throws ResourceNotFoundException {
+        pacienteService.eliminarPacientePorId(id);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping

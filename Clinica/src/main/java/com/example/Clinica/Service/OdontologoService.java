@@ -1,5 +1,6 @@
 package com.example.Clinica.Service;
 
+import com.example.Clinica.Exception.ResourceNotFoundException;
 import com.example.Clinica.Model.DTO.OdontologoDto;
 import com.example.Clinica.Model.Entity.Odontologo;
 import com.example.Clinica.Repository.IOdontologoRepository;
@@ -28,23 +29,28 @@ public class OdontologoService implements IOdontologoService{
     }
 
     @Override
-    public OdontologoDto bucarOdontologoPorId(long id) {
-
+    public OdontologoDto bucarOdontologoPorId(long id) throws ResourceNotFoundException {
         Optional<Odontologo> odontologo = odontologoRepository.findById(id);
-        OdontologoDto odontologoDto = null;
-        if(odontologo.isPresent()){
-            odontologoDto = objectMapper.convertValue(odontologo, OdontologoDto.class);
+        if(!odontologo.isPresent()){
+            throw new ResourceNotFoundException("El odontologo no existe");
         }
+        OdontologoDto odontologoDto = objectMapper.convertValue(odontologo, OdontologoDto.class);
         return odontologoDto;
     }
 
     @Override
-    public void modificarOdontologo(OdontologoDto odontologoDto) {
+    public void modificarOdontologo(OdontologoDto odontologoDto) throws ResourceNotFoundException {
+        if (!odontologoRepository.findById(odontologoDto.getId()).isPresent()){
+            throw new ResourceNotFoundException("El odonotologo no existe");
+        }
         guardarOdontologo(odontologoDto);
     }
 
     @Override
-    public void eliminarOdontologoPorId(long id) {
+    public void eliminarOdontologoPorId(long id) throws ResourceNotFoundException {
+        if (!odontologoRepository.findById(id).isPresent()){
+            throw new ResourceNotFoundException("Los datos ingresados no son validos.");
+        }
         odontologoRepository.deleteById(id);
     }
 
